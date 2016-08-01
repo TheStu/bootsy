@@ -7970,15 +7970,13 @@ wysihtml5.views.View = Base.extend(
       return value;
     },
 
-    setValue: function(html, parse) {
-      if (parse) {
-        html = this.parent.parse(html);
-      }
+    setValue: function(html) {
+      var parsedHtml = this.parent.parse(html);
 
       try {
-        this.element.innerHTML = html;
+        this.element.innerHTML = parsedHtml;
       } catch (e) {
-        this.element.innerText = html;
+        this.element.innerText = parsedHtml;
       }
     },
 
@@ -8659,21 +8657,19 @@ wysihtml5.views.View = Base.extend(
     /**
      * Sync html from composer to textarea
      * Takes care of placeholders
-     * @param {Boolean} shouldParseHtml Whether the html should be sanitized before inserting it into the textarea
      */
-    fromComposerToTextarea: function(shouldParseHtml) {
-      this.textarea.setValue(wysihtml5.lang.string(this.composer.getValue()).trim(), shouldParseHtml);
+    fromComposerToTextarea: function() {
+      this.textarea.setValue(wysihtml5.lang.string(this.composer.getValue()).trim());
     },
 
     /**
      * Sync value of textarea to composer
      * Takes care of placeholders
-     * @param {Boolean} shouldParseHtml Whether the html should be sanitized before inserting it into the composer
      */
-    fromTextareaToComposer: function(shouldParseHtml) {
+    fromTextareaToComposer: function() {
       var textareaValue = this.textarea.getValue();
       if (textareaValue) {
-        this.composer.setValue(textareaValue, shouldParseHtml);
+        this.composer.setValue(textareaValue);
       } else {
         this.composer.clear();
         this.editor.fire("set_placeholder");
@@ -8682,13 +8678,12 @@ wysihtml5.views.View = Base.extend(
 
     /**
      * Invoke syncing based on view state
-     * @param {Boolean} shouldParseHtml Whether the html should be sanitized before inserting it into the composer/textarea
      */
-    sync: function(shouldParseHtml) {
+    sync: function() {
       if (this.editor.currentView.name === "textarea") {
-        this.fromTextareaToComposer(shouldParseHtml);
+        this.fromTextareaToComposer();
       } else {
-        this.fromComposerToTextarea(shouldParseHtml);
+        this.fromComposerToTextarea();
       }
     },
 
@@ -8715,7 +8710,7 @@ wysihtml5.views.View = Base.extend(
         // If the textarea is in a form make sure that after onreset and onsubmit the composer
         // has the correct state
         wysihtml5.dom.observe(form, "submit", function() {
-          that.sync(true);
+          that.sync();
         });
         wysihtml5.dom.observe(form, "reset", function() {
           setTimeout(function() { that.fromTextareaToComposer(); }, 0);
@@ -8724,10 +8719,10 @@ wysihtml5.views.View = Base.extend(
 
       this.editor.observe("change_view", function(view) {
         if (view === "composer" && !interval) {
-          that.fromTextareaToComposer(true);
+          that.fromTextareaToComposer();
           startInterval();
         } else if (view === "textarea") {
-          that.fromComposerToTextarea(true);
+          that.fromComposerToTextarea();
           stopInterval();
         }
       });
@@ -9492,14 +9487,14 @@ wysihtml5.views.Textarea = wysihtml5.views.View.extend(
       return this.currentView.getValue(parse);
     },
 
-    setValue: function(html, parse) {
+    setValue: function(html) {
       this.fire("unset_placeholder");
 
       if (!html) {
         return this.clear();
       }
 
-      this.currentView.setValue(html, parse);
+      this.currentView.setValue(html);
       return this;
     },
 
