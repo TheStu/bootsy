@@ -121,7 +121,10 @@
     };
 
     var templates = function(key, locale, options) {
-        return tpl[key](locale, options);
+        if (typeof tpl[key] === 'function') {
+            return tpl[key](locale, options);
+        }
+        return null;
     };
 
 
@@ -174,34 +177,34 @@
                 'style': "display:none"
             });
             var culture = options.locale || defaultOptions.locale || "en";
-            for(var key in defaultOptions) {
-                var value = false;
-
-                if(options[key] !== undefined) {
-                    if(options[key] === true) {
-                        value = true;
-                    }
-                } else {
-                    value = defaultOptions[key];
+            for(var key in options) {
+                if (!options.hasOwnProperty(key)) {
+                    continue;
                 }
 
+                var value = options[key];
+
                 if(value === true) {
-                    toolbar.append(templates(key, locale[culture], options));
+                    var content = templates(key, locale[culture], options);
 
-                    if(key === "html") {
-                        this.initHtml(toolbar);
-                    }
+                    if(content) {
+                        toolbar.append(content);
 
-                    if(key === "link") {
-                        this.initInsertLink(toolbar);
-                    }
+                        if(key === "html") {
+                            this.initHtml(toolbar);
+                        }
 
-                    if(key === "image") {
-                        this.initInsertImage(toolbar);
-                    }
+                        if(key === "link") {
+                            this.initInsertLink(toolbar);
+                        }
 
-                    if(key == "customCommand") {
-                        this.initCustomCommand(toolbar, options.customCommandCallback);
+                        if(key === "image") {
+                            this.initInsertImage(toolbar);
+                        }
+
+                        if(key == "customCommand") {
+                            this.initCustomCommand(toolbar, options.customCommandCallback);
+                        }
                     }
                 }
             }
