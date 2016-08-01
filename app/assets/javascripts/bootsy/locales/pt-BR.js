@@ -46,6 +46,12 @@
       blue: 'Azul',
       orange: 'Laranja'
     },
+    align: {
+      left: 'Esquerda',
+      center: 'Centro',
+      right: 'Certo',
+      justify: 'Justificar'
+   },
     bootsy: {
       alertUnsaved: 'As suas modificações ainda não foram gravadas.',
       error: 'Algo deu errado. Por favor, tente novamente.'

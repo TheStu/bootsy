@@ -17,6 +17,7 @@ Bootsy.Area = function($el) {
     color: $el.data('bootsy-color'),
     emphasis: $el.data('bootsy-emphasis'),
     'font-styles': $el.data('bootsy-font-styles'),
+    align: $el.data('bootsy-align'),
     html: $el.data('bootsy-html'),
     image: $el.data('bootsy-image'),
     link: $el.data('bootsy-link'),
@@ -54,10 +55,11 @@ Bootsy.Area.prototype.init = function() {
   if (!this.$el.data('bootsy-initialized')) {
     if ((this.options.image === true) && (this.options.uploader === true)) {
       this.modal = new Bootsy.Modal(this);
-      this.options.image = false;
-      this.options.customCommand = true;
-      this.options.customCommandCallback = this.modal.show.bind(this.modal);
-      this.options.customTemplates = { customCommand: Bootsy.imageTemplate };
+      this.options.image = this.modal.show.bind(this.modal);
+      this.options.customTemplates = {
+        image: Bootsy.imageTemplate,
+        align: Bootsy.alignTemplate
+      };
     }
 
     this.editor = this.$el.wysihtml5($.extend(true, {}, Bootsy.options, this.options)).data('wysihtml5').editor;

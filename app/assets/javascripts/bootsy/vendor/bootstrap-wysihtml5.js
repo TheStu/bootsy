@@ -34,8 +34,8 @@
               "<div class='btn-group'>" +
                 "<a class='btn btn-default " + size + "' data-wysihtml5-command='insertUnorderedList' title='" + locale.lists.unordered + "' tabindex='-1'><i class='glyphicon glyphicon-list'></i></a>" +
                 "<a class='btn btn-default " + size + "' data-wysihtml5-command='insertOrderedList' title='" + locale.lists.ordered + "' tabindex='-1'><i class='glyphicon glyphicon-th-list'></i></a>" +
-                "<a class='btn btn-default " + size + "' data-wysihtml5-command='Outdent' title='" + locale.lists.outdent + "' tabindex='-1'><i class='glyphicon glyphicon-indent-left'></i></a>" +
-                "<a class='btn btn-default " + size + "' data-wysihtml5-command='Indent' title='" + locale.lists.indent + "' tabindex='-1'><i class='glyphicon glyphicon-indent-right'></i></a>" +
+                "<a class='btn btn-default " + size + "' data-wysihtml5-command='outdent' title='" + locale.lists.outdent + "' tabindex='-1'><i class='glyphicon glyphicon-indent-left'></i></a>" +
+                "<a class='btn btn-default " + size + "' data-wysihtml5-command='indent' title='" + locale.lists.indent + "' tabindex='-1'><i class='glyphicon glyphicon-indent-right'></i></a>" +
               "</div>" +
             "</li>";
         },
@@ -184,26 +184,30 @@
 
                 var value = options[key];
 
-                if(value === true) {
+                if(value) {
                     var content = templates(key, locale[culture], options);
 
                     if(content) {
                         toolbar.append(content);
 
-                        if(key === "html") {
-                            this.initHtml(toolbar);
-                        }
+                        if(typeof value === 'function') {
+                            this.initCustomCommand(toolbar, key, value);
+                        } else {
+                            if(key === "html") {
+                                this.initHtml(toolbar);
+                            }
 
-                        if(key === "link") {
-                            this.initInsertLink(toolbar);
-                        }
+                            if(key === "link") {
+                                this.initInsertLink(toolbar);
+                            }
 
-                        if(key === "image") {
-                            this.initInsertImage(toolbar);
-                        }
+                            if(key === "image") {
+                                this.initInsertImage(toolbar);
+                            }
 
-                        if(key == "customCommand") {
-                            this.initCustomCommand(toolbar, options.customCommandCallback);
+                            if(key == "customCommand") {
+                                this.initCustomCommand(toolbar, key, options.customCommandCallback);
+                            }
                         }
                     }
                 }
@@ -293,10 +297,10 @@
             });
         },
 
-        initCustomCommand: function(toolbar, callback) {
+        initCustomCommand: function(toolbar, command, callback) {
             var self = this;
 
-            toolbar.find('a[data-wysihtml5-command=customCommand]').click(function() {
+            toolbar.find('a[data-wysihtml5-command=' + command + ']').click(function() {
                 var activeButton = $(this).hasClass("wysihtml5-command-active");
 
                 if (!activeButton) {
