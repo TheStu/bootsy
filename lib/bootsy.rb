@@ -10,6 +10,8 @@ autoload :BootsyInput, 'bootsy/simple_form/bootsy_input'
 
 # Public: Top Bootsy module
 module Bootsy
+  autoload :ImageUploader, 'bootsy/image_uploader'
+
   ## CONFIGURATION OPTIONS
 
   # Default editor options
@@ -21,7 +23,8 @@ module Bootsy
     html: false,
     link: true,
     image: true,
-    color: true
+    color: true,
+    align: true
   }
 
   # Image versions available

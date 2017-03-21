@@ -46,6 +46,12 @@
       blue: 'Blue',
       orange: 'Orange'
     },
+    align: {
+      left: 'Left',
+      center: 'Center',
+      right: 'Right',
+      justify: 'Justify'
+    },
     bootsy: {
       alertUnsaved: 'You have unsaved changes.',
       error: 'Something went wrong. Please try again later.'

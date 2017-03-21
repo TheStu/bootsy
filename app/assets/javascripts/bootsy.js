@@ -4,7 +4,7 @@
 //= require bootsy/vendor/bootstrap.file-input
 //= require bootsy/area
 //= require bootsy/editor_options
-//= require bootsy/image_template
+//= require bootsy/custom_templates
 //= require bootsy/init
 //= require bootsy/locales/en
 //= require bootsy/modal

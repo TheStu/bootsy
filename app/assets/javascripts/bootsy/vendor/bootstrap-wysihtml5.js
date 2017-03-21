@@ -34,8 +34,8 @@
               "<div class='btn-group'>" +
                 "<a class='btn btn-default " + size + "' data-wysihtml5-command='insertUnorderedList' title='" + locale.lists.unordered + "' tabindex='-1'><i class='glyphicon glyphicon-list'></i></a>" +
                 "<a class='btn btn-default " + size + "' data-wysihtml5-command='insertOrderedList' title='" + locale.lists.ordered + "' tabindex='-1'><i class='glyphicon glyphicon-th-list'></i></a>" +
-                "<a class='btn btn-default " + size + "' data-wysihtml5-command='Outdent' title='" + locale.lists.outdent + "' tabindex='-1'><i class='glyphicon glyphicon-indent-left'></i></a>" +
-                "<a class='btn btn-default " + size + "' data-wysihtml5-command='Indent' title='" + locale.lists.indent + "' tabindex='-1'><i class='glyphicon glyphicon-indent-right'></i></a>" +
+                "<a class='btn btn-default " + size + "' data-wysihtml5-command='outdent' title='" + locale.lists.outdent + "' tabindex='-1'><i class='glyphicon glyphicon-indent-left'></i></a>" +
+                "<a class='btn btn-default " + size + "' data-wysihtml5-command='indent' title='" + locale.lists.indent + "' tabindex='-1'><i class='glyphicon glyphicon-indent-right'></i></a>" +
               "</div>" +
             "</li>";
         },
@@ -121,7 +121,10 @@
     };
 
     var templates = function(key, locale, options) {
-        return tpl[key](locale, options);
+        if (typeof tpl[key] === 'function') {
+            return tpl[key](locale, options);
+        }
+        return null;
     };
 
 
@@ -174,34 +177,38 @@
                 'style': "display:none"
             });
             var culture = options.locale || defaultOptions.locale || "en";
-            for(var key in defaultOptions) {
-                var value = false;
-
-                if(options[key] !== undefined) {
-                    if(options[key] === true) {
-                        value = true;
-                    }
-                } else {
-                    value = defaultOptions[key];
+            for(var key in options) {
+                if (!options.hasOwnProperty(key)) {
+                    continue;
                 }
 
-                if(value === true) {
-                    toolbar.append(templates(key, locale[culture], options));
+                var value = options[key];
 
-                    if(key === "html") {
-                        this.initHtml(toolbar);
-                    }
+                if(value) {
+                    var content = templates(key, locale[culture], options);
 
-                    if(key === "link") {
-                        this.initInsertLink(toolbar);
-                    }
+                    if(content) {
+                        toolbar.append(content);
 
-                    if(key === "image") {
-                        this.initInsertImage(toolbar);
-                    }
+                        if(typeof value === 'function') {
+                            this.initCustomCommand(toolbar, key, value);
+                        } else {
+                            if(key === "html") {
+                                this.initHtml(toolbar);
+                            }
 
-                    if(key == "customCommand") {
-                        this.initCustomCommand(toolbar, options.customCommandCallback);
+                            if(key === "link") {
+                                this.initInsertLink(toolbar);
+                            }
+
+                            if(key === "image") {
+                                this.initInsertImage(toolbar);
+                            }
+
+                            if(key == "customCommand") {
+                                this.initCustomCommand(toolbar, key, options.customCommandCallback);
+                            }
+                        }
                     }
                 }
             }
@@ -290,10 +297,10 @@
             });
         },
 
-        initCustomCommand: function(toolbar, callback) {
+        initCustomCommand: function(toolbar, command, callback) {
             var self = this;
 
-            toolbar.find('a[data-wysihtml5-command=customCommand]').click(function() {
+            toolbar.find('a[data-wysihtml5-command=' + command + ']').click(function() {
                 var activeButton = $(this).hasClass("wysihtml5-command-active");
 
                 if (!activeButton) {

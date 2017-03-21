@@ -239,6 +239,22 @@ ul.wysihtml5-toolbar div[data-wysihtml5-command-value="orange"] {
   margin: 0 0 8px 8px;
 }
 
+.wysiwyg-text-align-left {
+  text-align: left;
+}
+
+.wysiwyg-text-align-center {
+  text-align: center;
+}
+
+.wysiwyg-text-align-right {
+  text-align: right;
+}
+
+.wysiwyg-text-align-justify {
+  text-align: justify;
+}
+
 .bootsy blockquote {
   padding: 10px 20px;
   margin: 0 0 20px;
